@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>林星雄 ｜ 摄影 · 视频 · 新媒体运营</title>
+<meta name="description" content="林星雄 —— 摄影 / 摄像 / 视频剪辑 / 新媒体运营。用镜头记录真实，用内容放大价值。" />
+
+<!--
+  ============================================================
+  个人网站 v2 · 编辑式技术风（参考 liuliulab.org 的设计语言）
+  ============================================================
+  设计语言拆解：
+  · 浅暖纸底 + 近黑文字 + 单一强调色（--accent 一处可换）
+  · 英文大写小标签（eyebrow）+ 中文大标题，双语混排
+  · 全站编号体系 01 / 02 / 03
+  · 深色终端面板做技术感对比
+  · 发丝级 1px 分隔线 + 小圆角 + 大量留白
+  · 悬停展开的「文件夹」交互
+  想换深色：只改 :root 里前 6 个变量即可。
+
+  待补充清单（搜 TODO）：
+  1. 作品图 -> .case 里的 .ph
+  2. 生活板块图 -> .folder-stage 里的 .layer
+  3. 微信 / 小红书 / 抖音账号 -> #contact
+
+  视频怎么加：给作品卡加 data-video 属性即可（播放角标自动出现）
+    本地文件  data-video="videos/xxx.mp4"
+    B站嵌入   data-video="iframe:https://player.bilibili.com/player.html?bvid=BVxxxx"
+    不加 data-video 的卡片，点击仍走 <a href> 外链。
+  ============================================================
+-->
+
+<style>
+:root{
+  --paper:#F6F5F1;
+  --white:#FFFFFF;
+  --ink:#101010;
+  --ink-soft:#3A3A36;
+  --muted:#78776F;
+  --faint:#A6A59D;
+  --line:#E4E2DA;
+  --line-mid:#CFCCC1;
+  --accent:#E2542C;
+  --accent-soft:rgba(226,84,44,.07);
+  --term-bg:#111110;
+  --term-fg:#EDEBE4;
+  --term-dim:#7A7972;
+
+  --sans:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Noto Sans SC",-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;
+  --wrap:1200px;
+  --r:3px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:64px;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+ul,ol{list-style:none;}
+button{font-family:inherit;cursor:pointer;}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 40px;}
+
+/* ============ 通用排版件 ============ */
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.eyebrow::before{content:"+";color:var(--accent);font-size:13px;letter-spacing:0;}
+
+h1,h2,h3,h4{font-weight:700;letter-spacing:-.02em;line-height:1.24;}
+
+.sec{padding:104px 0;border-top:1px solid var(--line);}
+.sec-head{margin-bottom:56px;}
+.sec-head h2{font-size:clamp(28px,3.4vw,40px);margin-bottom:14px;}
+.sec-head p{color:var(--muted);font-size:15.5px;max-width:620px;}
+
+.idx{
+  font-family:var(--mono);font-size:12px;color:var(--faint);
+  letter-spacing:.08em;font-variant-numeric:tabular-nums;
+}
+
+.pill{
+  display:inline-block;font-size:12.5px;line-height:1;
+  padding:6px 12px;border:1px solid var(--line-mid);border-radius:999px;
+  color:var(--ink-soft);background:var(--white);white-space:nowrap;
+}
+.pill.accent{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+
+.ph{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  background:
+    repeating-linear-gradient(45deg,rgba(16,16,16,.035) 0 1px,transparent 1px 9px),
+    var(--white);
+  color:var(--faint);font-family:var(--mono);font-size:11.5px;line-height:1.8;
+  border:1px dashed var(--line-mid);
+}
+
+/* ============ 顶部导航 ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
+  background:rgba(246,245,241,.82);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .3s;
+}
+header.scrolled{border-bottom-color:var(--line);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:100%;}
+.brand{font-weight:700;font-size:16px;display:flex;align-items:center;gap:9px;}
+.brand span{font-family:var(--mono);font-size:10.5px;color:var(--faint);font-weight:400;letter-spacing:.14em;}
+.nav-links{display:flex;gap:2px;}
+.nav-links a{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);padding:8px 13px;border-radius:var(--r);transition:.2s;
+}
+.nav-links a:hover{color:var(--ink);background:rgba(16,16,16,.045);}
+.nav-links a.active{color:var(--accent);}
+.nav-cta{
+  font-size:13.5px;font-weight:500;padding:9px 18px;border:1px solid var(--ink);
+  border-radius:999px;background:var(--ink);color:var(--paper);transition:.22s;
+}
+.nav-cta:hover{background:var(--accent);border-color:var(--accent);}
+.menu-btn{display:none;background:none;border:0;font-size:20px;line-height:1;color:var(--ink);}
+
+/* ============ Hero ============ */
+.hero{padding:calc(64px + 92px) 0 88px;}
+.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:64px;align-items:start;}
+.hero h1{font-size:clamp(38px,5.6vw,66px);letter-spacing:-.03em;margin-bottom:24px;}
+.hero h1 .mark{color:var(--accent);}
+.hero-tags{
+  display:flex;flex-wrap:wrap;gap:0 10px;font-size:clamp(17px,2vw,22px);
+  font-weight:500;color:var(--ink-soft);margin-bottom:24px;letter-spacing:-.01em;
+}
+.hero-tags i{font-style:normal;color:var(--accent);font-weight:400;}
+.lead{color:var(--muted);font-size:16px;max-width:560px;margin-bottom:40px;}
+
+.entries{border-top:1px solid var(--line);}
+.entry{
+  display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;
+  padding:22px 16px 22px 0;border-bottom:1px solid var(--line);
+  transition:background .25s var(--ease),padding .25s var(--ease);
+}
+.entry:hover{background:var(--white);padding-left:16px;}
+.entry-title{font-size:17px;font-weight:600;display:block;margin-bottom:3px;}
+.entry-sub{font-size:13.5px;color:var(--muted);}
+.entry-go{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap;transition:color .2s;}
+.entry:hover .entry-go{color:var(--accent);}
+
+.hero-side{display:flex;flex-direction:column;gap:14px;}
+.hero-portrait{aspect-ratio:1/1;object-fit:contain;border-radius:var(--r);width:100%;}
+.hero-meta{border:1px solid var(--line);background:var(--white);border-radius:var(--r);padding:20px;}
+.hero-meta dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:13.5px;}
+.hero-meta dt{color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+.hero-meta dd{color:var(--ink-soft);text-align:right;}
+.dot-live{display:inline-flex;align-items:center;gap:6px;color:var(--accent);}
+.dot-live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:34px;}
+.chip{
+  display:inline-flex;align-items:center;gap:9px;font-size:13.5px;
+  border:1px solid var(--line-mid);background:var(--white);border-radius:999px;
+  padding:9px 16px;color:var(--ink-soft);transition:.22s;
+}
+.chip:hover{border-color:var(--ink);}
+.chip b{font-weight:600;color:var(--ink);}
+.chip .plus{font-family:var(--mono);color:var(--accent);font-size:14px;}
+.chip .note{font-size:11.5px;color:var(--faint);font-family:var(--mono);}
+
+/* ============ 数据条 ============ */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.stat{padding:30px 0 30px 26px;border-left:1px solid var(--line);}
+.stat:first-child{border-left:0;padding-left:0;}
+.stat .n{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums;}
+.stat .n sup{font-size:16px;color:var(--accent);font-weight:500;margin-left:1px;}
+.stat .l{font-size:12.5px;color:var(--muted);margin-top:6px;}
+
+/* ============ 作品集 ============ */
+/* ---- 作品折叠组 ---- */
+.wgroups{border-top:1px solid var(--line);}
+.wgroup{border-bottom:1px solid var(--line);}
+.wgroup .act-head{padding:24px 16px 24px 0;}
+.wgroup .nm{font-size:17.5px;}
+
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 22px;}
+.case{
+  display:block;background:var(--white);border:1px solid var(--line);border-radius:14px;
+  padding:10px 10px 14px;transition:.25s var(--ease);
+}
+.case:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(16,16,16,.10);border-color:var(--line-mid);}
+.case .frame{
+  position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:9px;
+  border:1px solid var(--line);background:var(--white);
+}
+.case .frame .ph{position:absolute;inset:0;border:0;}
+.case .frame img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.case:hover .frame img{transform:scale(1.035);}
+.case .kicker{
+  position:absolute;top:12px;left:12px;z-index:2;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  background:rgba(255,255,255,.94);border:1px solid var(--line-mid);
+  padding:4px 9px;border-radius:999px;color:var(--ink-soft);
+}
+.frame.fit-dark img{object-fit:contain;background:#141412;}
+.frame.fit-light img{object-fit:contain;background:#FFFFFF;}
+.pgrid{grid-template-columns:repeat(3,1fr);gap:22px 18px;}
+.pgrid .rshot{
+  aspect-ratio:1/1;cursor:zoom-in;overflow:hidden;
+  background:var(--white);border:1px solid var(--line);border-radius:7px;
+  box-shadow:0 6px 16px rgba(16,16,16,.09);
+  transform:rotate(var(--tilt,0deg));transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.pgrid .rshot:nth-child(3n+1){--tilt:-1.7deg;}
+.pgrid .rshot:nth-child(3n+2){--tilt:1.3deg;}
+.pgrid .rshot:nth-child(3n){--tilt:-.7deg;}
+.pgrid .rshot:hover{transform:rotate(0deg) translateY(-4px) scale(1.03);box-shadow:0 16px 34px rgba(16,16,16,.16);z-index:3;}
+.pgrid .rshot img{
+  position:absolute;inset:7px 7px 27px;width:calc(100% - 14px);height:calc(100% - 34px);
+  border-radius:4px;
+}
+.pgrid .rshot .cap{
+  left:8px;right:8px;bottom:0;padding:0 2px 7px;background:none;
+  color:var(--muted);font-size:10.5px;text-align:center;
+}
+/* ---- 视频卡播放角标（卡片带 data-video 时自动出现） ---- */
+.case .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;}
+.case .play i{
+  width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.94);
+  border:1px solid var(--line-mid);display:flex;align-items:center;justify-content:center;
+  color:var(--ink);transition:.25s var(--ease);
+}
+.case .play i::after{
+  content:"";width:0;height:0;margin-left:4px;
+  border-left:14px solid currentColor;
+  border-top:9px solid transparent;border-bottom:9px solid transparent;
+}
+.case:hover .play i{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.07);}
+
+.case h4{font-size:15.5px;font-weight:600;margin:13px 5px 6px;letter-spacing:-.01em;}
+.case .cat{font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin:0 5px;}
+.case .metrics{
+  font-size:13px;color:var(--muted);margin:12px 5px 0;padding-top:11px;
+  border-top:1px solid var(--line);display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+}
+.case .metrics b{color:var(--ink);font-weight:600;}
+
+/* ============ 时间轴 ============ */
+.tl{border-top:1px solid var(--line);}
+.tl-item{
+  display:grid;grid-template-columns:56px 210px 1fr;gap:26px;
+  padding:30px 0;border-bottom:1px solid var(--line);
+}
+.tl-item .i{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:5px;}
+.tl-item .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:4px;letter-spacing:.02em;}
+.tl-item h3{font-size:17.5px;font-weight:600;margin-bottom:4px;}
+.tl-item .org{font-size:13.5px;color:var(--accent);margin-bottom:10px;}
+.tl-item p{font-size:14.5px;color:var(--muted);margin-bottom:12px;}
+.tl-item .pills{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* ============ 荣誉 ============ */
+.honors{border-top:1px solid var(--line);}
+.honor{
+  display:grid;grid-template-columns:96px 1fr auto;gap:22px;align-items:center;
+  padding:19px 16px 19px 0;border-bottom:1px solid var(--line);transition:.22s var(--ease);
+}
+.honor:hover{background:var(--white);padding-left:16px;}
+.honor .yr{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.honor .nm{font-size:15px;color:var(--ink-soft);}
+
+/* ============ 教育 ============ */
+.edu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+.edu{border:1px solid var(--line);background:var(--white);border-radius:var(--r);padding:28px 26px;}
+.edu .when{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.06em;margin-bottom:14px;}
+.edu h3{font-size:19px;margin-bottom:4px;}
+.edu .major{font-size:13.5px;color:var(--muted);margin-bottom:16px;}
+.edu li{font-size:14px;color:var(--ink-soft);padding-left:18px;position:relative;margin-bottom:7px;}
+.edu li::before{content:"—";position:absolute;left:0;color:var(--faint);}
+
+/* ============ 生活（文件夹悬停展开） ============ */
+.folders{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.folder-stage{position:relative;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;}
+.folder-stage .layer{
+  position:absolute;width:70%;aspect-ratio:4/3;border-radius:var(--r);
+  border:1px solid var(--line-mid);background:var(--white);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .42s var(--ease),box-shadow .42s var(--ease);
+  font-family:var(--mono);font-size:11px;color:var(--faint);
+}
+.layer img{width:100%;height:100%;object-fit:cover;}
+.layer.l3{transform:rotate(-7deg) translate(-14px,4px);}
+.layer.l2{transform:rotate(-3deg) translate(-8px,2px);}
+.layer.l1{transform:rotate(0deg);z-index:3;}
+.folder:hover .layer.l1{transform:rotate(5deg) translateX(46px) translateY(-8px);box-shadow:0 14px 30px rgba(16,16,16,.13);}
+.folder:hover .layer.l2{transform:rotate(-9deg) translateX(-42px) translateY(-4px);box-shadow:0 14px 30px rgba(16,16,16,.13);}
+.folder:hover .layer.l3{transform:rotate(-22deg) translateX(-92px) translateY(10px);box-shadow:0 14px 30px rgba(16,16,16,.13);}
+.folder-label{margin-top:22px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.folder-label .n{font-family:var(--mono);font-size:12px;color:var(--faint);}
+.folder-label b{font-size:17px;font-weight:600;}
+.folder-label .en{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
+.folder-label .cn{width:100%;font-size:13.5px;color:var(--muted);margin-top:2px;}
+
+/* ============ 社会实践（手风琴） ============ */
+.acts{border-top:1px solid var(--line);}
+.act{border-bottom:1px solid var(--line);}
+.act-head{
+  display:grid;grid-template-columns:104px 1fr auto auto;gap:4px 24px;align-items:center;
+  width:100%;text-align:left;background:none;border:0;padding:20px 16px 20px 0;
+  font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;transition:.22s var(--ease);
+}
+.act-head:hover{background:var(--white);padding-left:16px;}
+.act .at{min-width:0;}
+.act .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.act .nm{display:block;font-size:15.5px;font-weight:600;color:var(--ink);}
+.act .pl{display:block;font-size:13.5px;color:var(--muted);margin-top:3px;}
+.act-more{
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;transition:color .25s;
+}
+.act-more i{
+  font-style:normal;width:20px;height:20px;border:1px solid var(--line-mid);border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:13px;line-height:1;
+  transition:transform .35s var(--ease),background .25s,color .25s,border-color .25s;
+}
+.act.open .act-more{color:var(--accent);}
+.act.open .act-more i{transform:rotate(45deg);background:var(--accent);color:#fff;border-color:var(--accent);}
+.act-body{max-height:0;overflow:hidden;transition:max-height .45s var(--ease);}
+.act-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:6px 0 24px;}
+.act-photos .rshot{cursor:zoom-in;}
+
+/* ---- 三下乡纪录短片（B站弹窗播放） ---- */
+.fwvideo{position:relative;display:block;border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;background:var(--white);margin-bottom:38px;cursor:pointer;}
+.fwvideo .cover{aspect-ratio:21/9;overflow:hidden;}
+.fwvideo .cover img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.fwvideo:hover .cover img{transform:scale(1.03);}
+.fwvideo .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;}
+.fwvideo .play i{
+  width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.94);
+  border:1px solid var(--line-mid);display:flex;align-items:center;justify-content:center;
+  color:var(--ink);font-size:20px;line-height:1;padding-left:4px;transition:.25s var(--ease);
+}
+.fwvideo:hover .play i{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.08);}
+.fwvideo .bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:14px 18px;border-top:1px solid var(--line);}
+.fwvideo .bar .en{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);}
+.fwvideo .bar b{font-size:15.5px;font-weight:600;}
+.fwvideo .bar span{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;}
+.fwvideo .bar .go{margin-left:auto;}
+@media(max-width:720px){.fwvideo .cover{aspect-ratio:16/9;}}
+
+/* ---- 图片灯箱 ---- */
+.lightbox{
+  position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;
+  padding:48px 40px;background:rgba(16,16,16,.93);cursor:zoom-out;
+}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:3px;}
+
+/* ============ 跑步 / 赛事 ============ */
+.race-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:40px;}
+.race-stats .rs{background:var(--white);padding:22px 24px;}
+.race-stats b{display:block;font-family:var(--mono);font-size:26px;font-weight:500;
+  letter-spacing:-.02em;line-height:1.2;font-variant-numeric:tabular-nums;}
+.race-stats span{display:block;font-size:12.5px;color:var(--muted);margin-top:6px;}
+
+.races{border-top:1px solid var(--line);}
+.race{
+  display:grid;grid-template-columns:104px 1fr auto auto;gap:4px 24px;align-items:baseline;
+  padding:20px 16px 20px 0;border-bottom:1px solid var(--line);transition:.22s var(--ease);
+}
+.race:hover{background:var(--white);padding-left:16px;}
+.race .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.race .ev{font-size:15.5px;color:var(--ink);}
+.race .dist{font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.05em;margin-left:12px;white-space:nowrap;}
+.race .res{font-family:var(--mono);font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.race .res i{font-style:normal;font-size:11px;color:var(--faint);margin-left:6px;}
+.race .pace{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap;}
+
+.race-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.rshot{
+  position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:var(--r);
+  border:1px solid var(--line);background:var(--white);display:block;
+}
+.rshot img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.rshot:hover img{transform:scale(1.04);}
+.rshot .cap{
+  position:absolute;left:0;right:0;bottom:0;padding:26px 12px 10px;
+  background:linear-gradient(transparent,rgba(16,16,16,.68));
+  color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.05em;
+}
+
+.certs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:52px;}
+.cert{
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--white);transition:.22s var(--ease);display:block;
+}
+.cert img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
+.cert span{display:block;padding:10px 12px;font-family:var(--mono);font-size:11.5px;
+  color:var(--muted);border-top:1px solid var(--line);letter-spacing:.02em;}
+.cert:hover{transform:translateY(-3px);border-color:var(--line-mid);}
+.block-label{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--faint);margin:52px 0 18px;display:flex;align-items:center;gap:10px;
+}
+.block-label::after{content:"";flex:1;height:1px;background:var(--line);}
+
+/* ---- 聘书卡片 + 指导现场 ---- */
+.cred{
+  display:grid;grid-template-columns:200px 1fr;gap:30px;align-items:center;
+  border:1px solid var(--line);background:var(--white);border-radius:var(--r);
+  padding:22px;margin-bottom:38px;
+}
+.cred-img{display:block;aspect-ratio:4/5;border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;}
+.cred-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.cred-img:hover img{transform:scale(1.03);}
+.cred-body h3{font-size:19px;margin:8px 0 10px;}
+.cred-body p{font-size:14.5px;color:var(--muted);max-width:640px;}
+.cred-link{font-family:var(--mono);font-size:12px;color:var(--accent);display:inline-block;margin-top:14px;}
+.cred-link:hover{text-decoration:underline;}
+
+.mrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.mrow .rshot{aspect-ratio:3/2;}
+.mrow2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px;}
+.mrow2 .rshot{aspect-ratio:16/10;}
+
+/* ---- 技能竞赛（市→省→国） ---- */
+.comp{border-top:1px solid var(--line);padding:26px 0 6px;}
+.comp:last-of-type{border-bottom:1px solid var(--line);margin-bottom:8px;}
+.comp-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.comp-head .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+.comp-head h3{font-size:16.5px;font-weight:600;}
+.comp-head .pill{margin-left:auto;}
+.comp-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-bottom:22px;}
+.comp-photos.two{grid-template-columns:repeat(2,1fr);}
+.comp-photos .rshot{aspect-ratio:3/2;}
+.comp-photos .rshot.fit img{object-fit:contain;background:#fff;}
+
+/* ============ 联系 ============ */
+.contact-grid{display:grid;grid-template-columns:1fr auto;gap:56px;align-items:end;}
+.contact h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.03em;margin-bottom:18px;}
+.contact .note{color:var(--muted);font-size:15.5px;max-width:520px;margin-bottom:32px;}
+.contact .btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:14px 28px;border-radius:999px;font-size:15px;font-weight:500;
+  transition:.22s var(--ease);border:1px solid var(--ink);
+}
+.btn-solid{background:var(--ink);color:var(--paper);}
+.btn-solid:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-2px);}
+.btn-line{background:transparent;color:var(--ink);}
+.btn-line:hover{background:var(--white);transform:translateY(-2px);}
+.contact-info{border-left:1px solid var(--line);padding-left:34px;display:flex;flex-direction:column;gap:16px;}
+.contact-info div{display:flex;flex-direction:column;gap:2px;}
+.contact-info dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);}
+.contact-info dd{font-size:15px;color:var(--ink-soft);}
+
+footer{border-top:1px solid var(--line);padding:28px 0;}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.04em;}
+
+/* ---- 视频弹窗播放器 ---- */
+.vmodal{
+  position:fixed;inset:0;z-index:200;display:none;
+  align-items:center;justify-content:center;padding:56px 32px 32px;
+  background:rgba(16,16,16,.88);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.vmodal.open{display:flex;}
+.vmodal-inner{position:relative;width:min(1080px,100%);}
+.vmodal video,.vmodal iframe{
+  width:100%;aspect-ratio:16/9;display:block;border:0;border-radius:4px;background:#000;
+}
+.vmodal-close{
+  position:absolute;top:-44px;right:0;width:32px;height:32px;border-radius:50%;
+  background:transparent;border:1px solid rgba(255,255,255,.34);color:#fff;
+  font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.vmodal-close:hover{background:#fff;color:#111;border-color:#fff;}
+.vmodal-tip{
+  position:absolute;top:-44px;left:0;color:rgba(255,255,255,.55);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  line-height:32px;
+}
+
+/* ============ 进场动画 ============ */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+.rv.in{opacity:1;transform:none;}
+
+/* ============ 响应式 ============ */
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;gap:44px;}
+  .hero-side{flex-direction:row;align-items:flex-start;gap:20px;}
+  .hero-portrait{width:200px;flex:none;}
+  .hero-meta{flex:1;}
+  .cases{grid-template-columns:repeat(2,1fr);}
+  .tl-item{grid-template-columns:44px 1fr;gap:8px 20px;}
+  .tl-item .when{grid-column:2;padding-top:0;margin-bottom:6px;}
+  .tl-item .body{grid-column:2;}
+  .contact-grid{grid-template-columns:1fr;gap:40px;}
+  .contact-info{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:28px;}
+  .race-grid{grid-template-columns:repeat(2,1fr);}
+  .certs{grid-template-columns:repeat(2,1fr);}
+  .act-head{grid-template-columns:92px 1fr auto auto;gap:4px 16px;}
+  .act .pl{font-size:13px;}
+  .act-photos{gap:10px;}
+  .race{grid-template-columns:92px 1fr auto;gap:4px 16px;}
+  .race .pace{display:none;}
+  .race .res{font-size:15px;}
+}
+@media(max-width:720px){
+  .wrap{padding:0 22px;}
+  .sec{padding:72px 0;}
+  .nav-links{
+    display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;
+    background:var(--paper);border-bottom:1px solid var(--line);padding:10px 22px 18px;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:12px 0;}
+  .nav-cta{display:none;}
+  .menu-btn{display:block;}
+  .hero-side{flex-direction:column;}
+  .hero-portrait{width:100%;max-width:260px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .stat{border-left:0;padding-left:0;border-top:1px solid var(--line);}
+  .stat:nth-child(-n+2){border-top:0;}
+  .stat:nth-child(even){padding-left:22px;border-left:1px solid var(--line);}
+  .cases{grid-template-columns:1fr;}
+  .folders{grid-template-columns:1fr;gap:52px;}
+  .comp-photos{grid-template-columns:1fr;}
+  .comp-photos.two{grid-template-columns:1fr;}
+  .honor{grid-template-columns:80px 1fr;gap:6px 16px;}
+  .honor .pill{grid-column:2;justify-self:start;margin-top:6px;}
+  .edu-grid{grid-template-columns:1fr;}
+  .race-stats{grid-template-columns:repeat(2,1fr);}
+  .race{grid-template-columns:1fr;gap:3px;padding:18px 0;}
+  .race:hover{padding-left:0;}
+  .race .res{font-size:15px;}
+  .cred{grid-template-columns:1fr;gap:20px;}
+  .cred-img{max-width:220px;}
+  .mrow,.mrow2{grid-template-columns:1fr;}
+  .act-head{grid-template-columns:1fr;gap:3px;padding:18px 0;}
+  .act-head:hover{padding-left:0;}
+  .act-head .pill{justify-self:start;margin-top:4px;}
+  .act-more{justify-self:start;margin-top:4px;}
+  .act-photos{grid-template-columns:1fr;gap:10px;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= 导航 ================= -->
+<header id="header">
+  <div class="wrap nav">
+    <a href="#top" class="brand">林星雄 <span>影像与内容</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#work">作品</a>
+      <a href="#journey">经历</a>
+      <a href="#fieldwork">社会实践</a>
+      <a href="#honors">荣誉</a>
+      <a href="#racing">跑步</a>
+      <a href="#life">生活</a>
+      <a href="#contact">联系</a>
+    </nav>
+    <a href="#contact" class="nav-cta">找我聊聊</a>
+    <button class="menu-btn" id="menuBtn" aria-label="菜单">&#9776;</button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= Hero ================= -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">摄影 · 剪辑 · 内容运营</p>
+        <h1>我是林星雄<br /><span class="mark">专注</span>影像与内容</h1>
+
+        <div class="hero-tags">
+          摄影<i>+</i> 摄像<i>+</i> 视频剪辑<i>+</i> 新媒体运营
+        </div>
+
+        <p class="lead">
+          从活动纪实拍到婚礼跟拍，从产品口播剪到本地商家短视频。
+          影像、内容、平台运营这几件事，我都亲手做过一遍。
+        </p>
+
+        <div class="entries">
+          <a class="entry" href="#work">
+            <span class="idx">01</span>
+            <span>
+              <span class="entry-title">作品集</span>
+              <span class="entry-sub">摄影摄像 · 短视频剪辑 · 微电影 · 宣传片</span>
+            </span>
+            <span class="entry-go">查看作品 ↓</span>
+          </a>
+          <a class="entry" href="#journey">
+            <span class="idx">02</span>
+            <span>
+              <span class="entry-title">新媒体运营与直播执行</span>
+              <span class="entry-sub">抖音 · 美团 · 直播中控</span>
+            </span>
+            <span class="entry-go">查看经历 ↓</span>
+          </a>
+          <a class="entry" href="#fieldwork">
+            <span class="idx">03</span>
+            <span>
+              <span class="entry-title">社会实践与生活</span>
+              <span class="entry-sub">三下乡实践 · 跑步 · 拍照</span>
+            </span>
+            <span class="entry-go">看看现场 ↓</span>
+          </a>
+        </div>
+
+        <div class="chips">
+          <button class="chip" data-copy="17850846042">
+            <b>电话</b> 178-5084-6042 <span class="plus">＋</span> <span class="note">点击复制</span>
+          </button>
+          <!-- TODO: 换成你的微信号 -->
+          <button class="chip" data-copy="1321400855">
+            <b>微信</b> 1321400855 <span class="plus">＋</span> <span class="note">点击复制</span>
+          </button>
+          <button class="chip" data-copy="1321400855@qq.com">
+            <b>邮箱</b> 1321400855@qq.com <span class="plus">＋</span> <span class="note">点击复制</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <img class="hero-portrait" src="images/portrait/hero.png" alt="林星雄卡通形象：手持口袋云台相机与胶片相机">
+        <div class="hero-meta">
+          <dl>
+            <dt>坐标</dt><dd>厦门 / 福州</dd>
+            <dt>年龄</dt><dd>23</dd>
+            <dt>专业</dt><dd>金融学 · 电子商务</dd>
+            <dt>状态</dt><dd><span class="dot-live">可接合作</span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:72px;">
+      <div class="stat"><div class="n">50<sup>+</sup></div><div class="l">场活动拍摄</div></div>
+      <div class="stat"><div class="n">500<sup>+</sup></div><div class="l">张优质照片产出</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">段工作经历</div></div>
+      <div class="stat"><div class="n">7</div><div class="l">项竞赛荣誉</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 作品集 ================= -->
+<section class="sec" id="work">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">作品集</p>
+      <h2>我拍过和剪过的东西</h2>
+      <p>按类型分成四组，点击组名可展开或收起；每张卡都写清楚「什么场景 + 我负责哪一环」。</p>
+    </div>
+
+    <div class="wgroups">
+    <div class="act wgroup open rv">
+      <button class="act-head" type="button" aria-expanded="true">
+        <span class="when">01</span>
+        <span class="at">
+          <span class="nm">摄影与摄像</span>
+          <span class="pl">活动纪实、电商产品、舞蹈短片、婚礼跟拍</span>
+        </span>
+        <span class="pill">9 个作品</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="cases">
+        <a class="case" href="images/work/work-01.jpg" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">活动纪实</span>
+            <img src="images/work/work-01.jpg" alt="互联网+大学生创新创业大赛经验分享会合影" loading="lazy">
+          </div>
+          <h4>校园活动跟拍</h4>
+          <p class="cat">「互联网+」大赛经验分享会 · 活动纪实</p>
+          <p class="metrics">累计拍摄 <b>50+</b> 场</p>
+        </a>
+
+        <a class="case" href="images/work/work-02.jpg" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">婚礼跟拍</span>
+            <img src="images/work/work-02.jpg" alt="婚礼秀禾服新娘与伴娘合影" loading="lazy">
+          </div>
+          <h4>婚礼全流程影像</h4>
+          <p class="cat">薇薇新娘影像艺术空间</p>
+          <p class="metrics">拍摄 <b>+</b> 后期成片全包</p>
+        </a>
+
+        <a class="case" href="https://v.douyin.com/8wrhotBOFQY/" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">企业宣传</span>
+            <img src="images/work/v-zhangjinr.jpg" alt="张锦儿字构所宣传片封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>张锦儿字构所宣传片</h4>
+          <p class="cat">拍摄 + 剪辑 · 抖音</p>
+          <p class="metrics">2025.08 · 抖音 ↗</p>
+        </a>
+
+        <a class="case" href="https://v.douyin.com/Hd1ZQfCtpGE/" target="_blank" rel="noopener">
+          <div class="frame fit-light">
+            <span class="kicker">企业宣传</span>
+            <img src="images/work/v-jinlubao.jpg" alt="金鹭宝集团宣传片封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>金鹭宝集团企业宣传片</h4>
+          <p class="cat">拍摄 + 剪辑 · 抖音</p>
+          <p class="metrics">2024.04 · 抖音 ↗</p>
+        </a>
+
+        <a class="case" href="#" data-video="videos/kouqiang.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">企业宣传</span>
+            <img src="images/work/v-kouqiang.jpg" alt="口腔诊所宣传片封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>口腔诊所宣传片</h4>
+          <p class="cat">拍摄 + 剪辑</p>
+          <p class="metrics">点击播放成片</p>
+        </a>
+
+        <div class="case">
+          <div class="frame">
+            <span class="kicker">机构宣传</span>
+            <img src="images/work/v-xingyue.jpg" alt="星悦航程托管机构宣传片封面" loading="lazy">
+          </div>
+          <h4>星悦航程托管机构宣传片</h4>
+          <p class="cat">策划 · 拍摄 · 剪辑</p>
+          <p class="metrics">《用心守护每一餐》</p>
+        </div>
+
+        <a class="case" href="https://weixin.qq.com/sph/AeE3p2jamW" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">制片统筹</span>
+            <img src="images/work/v-wuji.jpg" alt="无人机协会宣传视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>无人机协会宣传视频</h4>
+          <p class="cat">制片统筹 · 视频号</p>
+          <p class="metrics">项目统筹与成片交付 ↗</p>
+        </a>
+
+        <a class="case" href="images/work/v-lujie.jpg" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">电商产品</span>
+            <img src="images/work/v-lujie.jpg" alt="卤无界卤味电商产品主图" loading="lazy">
+          </div>
+          <h4>卤无界 · 卤味电商产品图</h4>
+          <p class="cat">产品摄影 · 主图与详情素材</p>
+          <p class="metrics">鸭头 / 鸭脖 / 鸭爪 / 鸭翅 全系列</p>
+        </a>
+
+        <a class="case" href="https://weixin.qq.com/sph/AQISrDFXHq" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">舞蹈短片</span>
+            <img src="images/work/v-dance.jpg" alt="舞蹈视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>舞蹈视频</h4>
+          <p class="cat">拍摄 + 剪辑 · 视频号</p>
+          <p class="metrics">成片交付 ↗</p>
+        </a>
+      </div>
+    </div>
+      </div>
+
+    <div class="act wgroup rv">
+      <button class="act-head" type="button" aria-expanded="false">
+        <span class="when">02</span>
+        <span class="at">
+          <span class="nm">易播星 · 品牌项目</span>
+          <span class="pl">哈根达斯 / 圣农 / 冈本，产品视频与主播口播，点击弹窗播放</span>
+        </span>
+        <span class="pill">3 个品牌</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="cases">
+        <a class="case" href="#" data-video="videos/hagendasi.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">哈根达斯</span>
+            <img src="images/work/v-hagendasi.jpg" alt="哈根达斯产品视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>哈根达斯 · 产品视频</h4>
+          <p class="cat">易播星 · 拍摄剪辑</p>
+          <p class="metrics">点击播放成片</p>
+        </a>
+        <a class="case" href="#" data-video="videos/shengnong.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">圣农</span>
+            <img src="images/work/v-shengnong.jpg" alt="圣农产品视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>圣农 · 产品视频</h4>
+          <p class="cat">易播星 · 拍摄剪辑</p>
+          <p class="metrics">点击播放成片</p>
+        </a>
+        <a class="case" href="#" data-video="videos/gangben.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">冈本</span>
+            <img src="images/work/v-gangben.jpg" alt="冈本主播口播视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>冈本 · 主播口播</h4>
+          <p class="cat">易播星 · 拍摄剪辑</p>
+          <p class="metrics">独立完成 <b>拍摄 → 剪辑 → 发布</b></p>
+        </a>
+      </div>
+      </div>
+    </div>
+
+    <div class="act wgroup rv">
+      <button class="act-head" type="button" aria-expanded="false">
+        <span class="when">03</span>
+        <span class="at">
+          <span class="nm">短视频与剪辑</span>
+          <span class="pl">商家探店、账号日常、直播贴片与页面设计</span>
+        </span>
+        <span class="pill">7 个作品</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="cases">
+        <a class="case" href="#" data-video="videos/xianlaohui.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">本地商家</span>
+            <img src="images/work/v-xianlaohui-vid.jpg" alt="鲜捞汇面馆探店视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>本地商家短视频</h4>
+          <p class="cat">拾六传媒 · 抖音 / 美团</p>
+          <p class="metrics">内容制作 <b>+</b> 广告投放 · 点击播放</p>
+        </a>
+        <a class="case" href="#" data-video="videos/daiyunying.mp4">
+          <div class="frame fit-dark">
+            <span class="kicker">账号日常</span>
+            <img src="images/work/v-daiyunying.jpg" alt="星创韶光 00后代运营团队视频封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>传媒公司账号日常</h4>
+          <p class="cat">星创韶光 · 账号运营</p>
+          <p class="metrics">00后代运营团队 · 点击播放</p>
+        </a>
+        <a class="case" href="#" data-video="videos/mazu.mp4">
+          <div class="frame">
+            <span class="kicker">主题短片</span>
+            <img src="images/work/v-mazu.jpg" alt="妈祖精神跨越时空的传承封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>校园活动微视频 · 妈祖精神</h4>
+          <p class="cat">校官微团队 · 妈祖文化主题片 · 制片剪辑</p>
+          <p class="metrics">推文 <b>20+</b> 场 · 点击播放成片</p>
+        </a>
+        <a class="case" href="https://v.douyin.com/V3iUIg1Pios/" target="_blank" rel="noopener">
+          <div class="frame fit-dark">
+            <span class="kicker">账号运营</span>
+            <img src="images/work/v-pangxialai.jpg" alt="胖虾来（奎桥店）抖音商家账号主页" loading="lazy">
+          </div>
+          <h4>胖虾来（奎桥店）</h4>
+          <p class="cat">抖音运营 + IP 编导 · 商家认证账号</p>
+          <p class="metrics">粉丝 <b>9,796</b> · 获赞 <b>9.3万</b></p>
+        </a>
+        <a class="case" href="https://v.douyin.com/ums-v5GdMG0/" target="_blank" rel="noopener">
+          <div class="frame fit-dark">
+            <span class="kicker">账号运营</span>
+            <img src="images/work/v-xianlaohui.jpg" alt="鲜捞汇面馆抖音商家账号主页" loading="lazy">
+          </div>
+          <h4>鲜捞汇面馆</h4>
+          <p class="cat">抖音运营 + IP 编导 · 商家认证账号</p>
+          <p class="metrics">粉丝 <b>1,246</b> · 获赞 <b>6,959</b></p>
+        </a>
+        <a class="case" href="images/work/v-tiepian.jpg" target="_blank" rel="noopener">
+          <div class="frame fit-dark">
+            <span class="kicker">直播贴片</span>
+            <img src="images/work/v-tiepian.jpg" alt="胖虾来直播间贴片设计" loading="lazy">
+          </div>
+          <h4>直播间贴片与视觉设计</h4>
+          <p class="cat">胖虾来 · 背景与促销贴片</p>
+          <p class="metrics">AIGC 组合 <b>+</b> 手动排版</p>
+        </a>
+        <a class="case" href="images/work/v-xhs.jpg" target="_blank" rel="noopener">
+          <div class="frame fit-light">
+            <span class="kicker">页面设计</span>
+            <img src="images/work/v-xhs.jpg" alt="小红书与美团账号页面设计" loading="lazy">
+          </div>
+          <h4>小红书 · 美团页面设计</h4>
+          <p class="cat">本地美食账号 · 代运营</p>
+          <p class="metrics">图文排版与账号视觉</p>
+        </a>
+      </div>
+    </div>
+      </div>
+
+    <div class="act wgroup rv">
+      <button class="act-head" type="button" aria-expanded="false">
+        <span class="when">04</span>
+        <span class="at">
+          <span class="nm">微电影创作</span>
+          <span class="pl">大学期间自编自导自剪的三部短片，均在 B 站可看</span>
+        </span>
+        <span class="pill">3 部影片</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="cases">
+        <a class="case" href="https://www.bilibili.com/video/BV1yq4y1Y7WR/" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">美育校园</span>
+            <img src="images/work/mf-qingchun.jpg" alt="微电影《不负青春》封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>不负青春</h4>
+          <p class="cat">美育校园主题微电影 · 林星雄组 · 6'23"</p>
+          <p class="metrics">2022.03 · Bilibili ↗</p>
+        </a>
+        <a class="case" href="https://www.bilibili.com/video/BV1Wr4y1V7Av/" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">思修普法</span>
+            <img src="images/work/mf-xiaoyuandai.jpg" alt="普法短片《校园贷视频》封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>校园贷视频</h4>
+          <p class="cat">思修课程法律主题短片 · 6'30"</p>
+          <p class="metrics">2022.06 · Bilibili ↗</p>
+        </a>
+        <a class="case" href="https://www.bilibili.com/video/BV1Po4y1T7uQ/" target="_blank" rel="noopener">
+          <div class="frame">
+            <span class="kicker">资助育人</span>
+            <img src="images/work/mf-zizhu.jpg" alt="微电影《资助的意义是什么？》封面" loading="lazy">
+            <span class="play"><i>&#9654;&#65038;</i></span>
+          </div>
+          <h4>资助的意义是什么？</h4>
+          <p class="cat">资助育人主题微电影 · 6'01"</p>
+          <p class="metrics">2023.06 · Bilibili ↗</p>
+        </a>
+      </div>
+    </div>
+      </div>
+
+    <div class="act wgroup rv">
+      <button class="act-head" type="button" aria-expanded="false">
+        <span class="when">05</span>
+        <span class="at">
+          <span class="nm">人像摄影</span>
+          <span class="pl">人像 · 漫展 · 街拍 · 戏剧主题，精选 15 张，点击看大图</span>
+        </span>
+        <span class="pill">15 张精选</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="act-photos pgrid">
+        <a href="images/work/pw-drama-1.jpg"><span class="rshot"><img src="images/work/pw-drama-1.jpg" alt="戏剧人像 妈祖系列" loading="lazy"><span class="cap">戏剧人像 · 妈祖系列</span></span></a>
+        <a href="images/work/pw-drama-2.jpg"><span class="rshot"><img src="images/work/pw-drama-2.jpg" alt="戏剧人像 屋顶红妆" loading="lazy"><span class="cap">屋顶红妆</span></span></a>
+        <a href="images/work/pw-drama-3.jpg"><span class="rshot"><img src="images/work/pw-drama-3.jpg" alt="戏剧人像 白墙纸伞" loading="lazy"><span class="cap">白墙纸伞</span></span></a>
+        <a href="images/work/pw-gufeng.jpg"><span class="rshot"><img src="images/work/pw-gufeng.jpg" alt="古风画室茶席人像" loading="lazy"><span class="cap">古风 · 画室茶席</span></span></a>
+        <a href="images/work/pw-bar.jpg"><span class="rshot"><img src="images/work/pw-bar.jpg" alt="夜色酒吧人像" loading="lazy"><span class="cap">夜色 · 酒吧人像</span></span></a>
+        <a href="images/work/pw-roof.jpg"><span class="rshot"><img src="images/work/pw-roof.jpg" alt="校园天台人像" loading="lazy"><span class="cap">校园 · 天台</span></span></a>
+        <a href="images/work/pw-lvye.jpg"><span class="rshot"><img src="images/work/pw-lvye.jpg" alt="绿野石阶人像" loading="lazy"><span class="cap">绿野 · 石阶</span></span></a>
+        <a href="images/work/pw-sjm.jpg"><span class="rshot"><img src="images/work/pw-sjm.jpg" alt="三角梅与白裙" loading="lazy"><span class="cap">三角梅与白裙</span></span></a>
+        <a href="images/work/pw-manwu-1.jpg"><span class="rshot"><img src="images/work/pw-manwu-1.jpg" alt="厦门动漫节舞台" loading="lazy"><span class="cap">厦门动漫节 · 舞台</span></span></a>
+        <a href="images/work/pw-manwu-2.jpg"><span class="rshot"><img src="images/work/pw-manwu-2.jpg" alt="漫展角色扮演" loading="lazy"><span class="cap">漫展 · 角色扮演</span></span></a>
+        <a href="images/work/pw-zhongshan.jpg"><span class="rshot"><img src="images/work/pw-zhongshan.jpg" alt="中山街夜景人像" loading="lazy"><span class="cap">中山街 · 夜景</span></span></a>
+        <a href="images/work/pw-haibian.jpg"><span class="rshot"><img src="images/work/pw-haibian.jpg" alt="海边跃动人像" loading="lazy"><span class="cap">海边 · 跃动</span></span></a>
+        <a href="images/work/pw-jietou.jpg"><span class="rshot"><img src="images/work/pw-jietou.jpg" alt="街头猫耳少女" loading="lazy"><span class="cap">街头 · 猫耳少女</span></span></a>
+        <a href="images/work/pw-caodi.jpg"><span class="rshot"><img src="images/work/pw-caodi.jpg" alt="草地白裙人像" loading="lazy"><span class="cap">草地 · 白裙</span></span></a>
+        <a href="images/work/pw-xueyuan.jpg"><span class="rshot"><img src="images/work/pw-xueyuan.jpg" alt="学院风楼梯人像" loading="lazy"><span class="cap">学院风 · 楼梯</span></span></a>
+      </div>
+      </div>
+    </div>
+
+    <div class="act wgroup rv">
+      <button class="act-head" type="button" aria-expanded="false">
+        <span class="when">06</span>
+        <span class="at">
+          <span class="nm">直播执行 · 中控现场</span>
+          <span class="pl">玩具 · 户外 · 美食 · 商超多类目直播间与线下中控，点击看大图</span>
+        </span>
+        <span class="pill">6 张现场</span>
+        <span class="act-more"><i>+</i></span>
+      </button>
+      <div class="act-body">
+      <div class="act-photos pgrid">
+        <a href="images/work/zb-onsite.jpg"><span class="rshot"><img src="images/work/zb-onsite.jpg" alt="海鲜餐厅线下直播中控现场" loading="lazy"><span class="cap">海鲜餐厅 · 线下中控现场</span></span></a>
+        <a href="images/work/zb-toy-1.jpg"><span class="rshot"><img src="images/work/zb-toy-1.jpg" alt="童年捣蛋小玩家玩具直播间" loading="lazy"><span class="cap">童年捣蛋小玩家 · 玩具直播（363万粉）</span></span></a>
+        <a href="images/work/zb-toy-2.jpg"><span class="rshot"><img src="images/work/zb-toy-2.jpg" alt="童年捣蛋小玩家直播讲解中" loading="lazy"><span class="cap">童年捣蛋小玩家 · 讲解中</span></span></a>
+        <a href="images/work/zb-fan.jpg"><span class="rshot"><img src="images/work/zb-fan.jpg" alt="户外冰爽挂脖风扇专场" loading="lazy"><span class="cap">户外冰爽 · 挂脖风扇专场</span></span></a>
+        <a href="images/work/zb-yuwan.jpg"><span class="rshot"><img src="images/work/zb-yuwan.jpg" alt="福百道古法手工鱼丸抖音旗舰直播间" loading="lazy"><span class="cap">福百道 · 古法鱼丸（抖音旗舰）</span></span></a>
+        <a href="images/work/v-zhibo.jpg"><span class="rshot"><img src="images/work/v-zhibo.jpg" alt="今日昇采甄选会员线上超市直播间" loading="lazy"><span class="cap">今日昇采甄选 · 会员线上超市</span></span></a>
+      </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 能力 + 工具栈 ================= -->
+<!-- ================= 经历 ================= -->
+<section class="sec" id="journey">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">成长经历</p>
+      <h2>我的升级打怪之路</h2>
+      <p>不是规划好的路线。每走一段，我把当时解决问题的方法留下来。</p>
+    </div>
+
+    <div class="tl">
+      <article class="tl-item rv">
+        <span class="i">01</span>
+        <span class="when">2026.02 — 2026.05</span>
+        <div class="body">
+          <h3>BD 商务拓展</h3>
+          <p class="org">食物主义（抖音本地生活）· 实习</p>
+          <p>担任 BD 岗位，负责本地生活商家的拓展与对接，围绕美团、58 同城开展商户沟通与渠道合作，积累了从陌拜到签约落地的完整地推经验。</p>
+          <div class="pills"><span class="pill">商务拓展</span><span class="pill">美团</span><span class="pill">58同城</span><span class="pill">本地生活</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item rv">
+        <span class="i">02</span>
+        <span class="when">2025.07 — 2025.09</span>
+        <div class="body">
+          <h3>新媒体运营</h3>
+          <p class="org">福州长乐拾六传媒有限公司</p>
+          <p>配合团队执行本地商家短视频制作与广告投放，聚焦抖音、美团平台；参与 4 场本地商家直播的筹备与执行，负责直播中控。</p>
+          <!-- TODO: 补一条结果数据 -->
+          <div class="pills"><span class="pill">抖音</span><span class="pill">美团</span><span class="pill">直播中控</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item rv">
+        <span class="i">03</span>
+        <span class="when">2024.02 — 2024.07</span>
+        <div class="body">
+          <h3>拍摄剪辑</h3>
+          <p class="org">厦门易播星网络科技有限公司</p>
+          <p>负责哈根达斯、圣农、冈本等品牌产品类口播矩阵的拍摄与剪辑，独立完成从素材拍摄、剪辑到发布的全流程。</p>
+          <div class="pills"><span class="pill">口播矩阵</span><span class="pill">品牌内容</span><span class="pill">独立交付</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item rv">
+        <span class="i">04</span>
+        <span class="when">2023.09 — 2024.02</span>
+        <div class="body">
+          <h3>摄影 / 摄像</h3>
+          <p class="org">薇薇新娘影像艺术空间</p>
+          <p>对接客户拍摄需求，服务婚礼全流程的视频与照片拍摄，负责后期处理并交付成片。</p>
+          <div class="pills"><span class="pill">婚礼跟拍</span><span class="pill">客户沟通</span><span class="pill">后期出片</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item rv">
+        <span class="i">05</span>
+        <span class="when">2022.09 — 2023.09</span>
+        <div class="body">
+          <h3>摄影 / 摄像 / 设计</h3>
+          <p class="org">行之设计工作室</p>
+          <p>负责互联网+创新创业大赛、新教师入职仪式、毕业典礼、校园辩论赛等赛事活动拍摄 50 余次；兼任宣传活动海报设计与文案编辑。</p>
+          <div class="pills"><span class="pill">活动拍摄</span><span class="pill">海报设计</span><span class="pill">文案</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item rv">
+        <span class="i">06</span>
+        <span class="when">2021.09 — 2026.06</span>
+        <div class="body">
+          <h3>在校积累</h3>
+          <p class="org">厦门城市职业学院 → 福州外语外贸学院</p>
+          <p>专科读电子商务，本科读金融学。做过班长、团支书、校团委助理和校官微核心成员，组织过三下乡实践，志愿时长累计 160 小时。</p>
+          <div class="pills"><span class="pill">班团干部</span><span class="pill">校官微</span><span class="pill">组织协调</span></div>
+        </div>
+      </article>
+    </div>
+
+    <!-- ===== 专业指导 ===== -->
+    <div class="sec-head rv" style="margin:88px 0 36px;">
+      <p class="eyebrow">校友带教</p>
+      <h2 style="font-size:26px;">回母校带学弟学妹</h2>
+      <p>
+        受聘厦门城市职业学院校友联络员，连续三届担任「财经商贸电商校友杯」专业指导，
+        带电商直播实训——从镜头、灯光、绿幕到直播中控，把做过的东西教一遍。
+      </p>
+    </div>
+
+    <div class="cred rv">
+      <a class="cred-img" href="images/mentor/mentor-pingshu.jpg" target="_blank">
+        <img src="images/mentor/mentor-pingshu.jpg" alt="厦门城市职业学院校友联络员聘书" loading="lazy">
+      </a>
+      <div class="cred-body">
+        <p class="eyebrow" style="margin-bottom:6px;">聘书</p>
+        <h3>厦门城市职业学院 · 校友联络员</h3>
+        <p>聘书编号 NO.2024002，2024 年 6 月受聘。连续三届担任「财经商贸电商校友杯」大学生电商直播大赛专业指导。</p>
+        <a class="cred-link" href="images/mentor/mentor-pingshu.jpg" target="_blank">查看聘书原件 &rarr;</a>
+      </div>
+    </div>
+
+    <p class="block-label rv" style="margin-top:0;">三届合影</p>
+    <div class="mrow rv">
+      <a class="rshot" href="images/mentor/mentor-r1-group.jpg" target="_blank">
+        <img src="images/mentor/mentor-r1-group.jpg" alt="首届校友杯大学生电商直播大赛决赛合影" loading="lazy">
+        <span class="cap">首届「校友杯」· 决赛合影</span></a>
+      <a class="rshot" href="images/mentor/mentor-r2-group.jpg" target="_blank">
+        <img src="images/mentor/mentor-r2-group.jpg" alt="第二届校友杯大学生电商直播大赛合影" loading="lazy">
+        <span class="cap">第二届「校友杯」· 合影</span></a>
+      <a class="rshot" href="images/mentor/mentor-r3-group.jpg" target="_blank">
+        <img src="images/mentor/mentor-r3-group.jpg" alt="第三届校友杯大学生电商直播大赛合影" loading="lazy">
+        <span class="cap">第三届「校友杯」· 合影</span></a>
+    </div>
+
+    <p class="block-label rv">实训现场</p>
+    <div class="mrow2 rv">
+      <a class="rshot" href="images/mentor/mentor-student.jpg" target="_blank">
+        <img src="images/mentor/mentor-student.jpg" alt="绿幕实训 学生拍摄状态" loading="lazy">
+        <span class="cap">绿幕实训 · 学生状态</span></a>
+      <a class="rshot" href="images/mentor/mentor-console.jpg" target="_blank">
+        <img src="images/mentor/mentor-console.jpg" alt="直播中控执行" loading="lazy">
+        <span class="cap">直播中控 · 现场执行</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 社会实践 ================= -->
+<section class="sec" id="fieldwork">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">社会实践</p>
+      <h2>三下乡，我在跑的现场</h2>
+      <p>从 2022 到 2025，八次社会实践。前半段在走访企业和非遗田野，后半段基本在做同一件事——把直播间搬到田间地头。</p>
+    </div>
+
+    <a class="fwvideo rv" href="https://www.bilibili.com/video/BV1Q841127Dn/" target="_blank" rel="noopener" aria-label="在B站打开三下乡社会实践纪录短片">
+      <div class="cover"><img src="images/fieldwork/fw2023-elive-2.jpg" alt="三下乡社会实践纪录短片封面" loading="lazy"></div>
+      <span class="play"><i>&#9654;&#65038;</i></span>
+      <div class="bar">
+        <span class="en">短片</span>
+        <b>大学三下乡社会实践 · 纪录短片</b>
+        <span>2023.07</span>
+        <span>哔哩哔哩</span>
+        <span class="go">在B站观看 ↗</span>
+      </div>
+    </a>
+
+    <div class="acts rv">
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2025.06</span>
+          <span class="at">
+            <span class="nm">「蟳浪乡野」青播助农实践团</span>
+            <span class="pl">红蟳公社 · 户外直播间搭建 + 农特产品直播带货</span>
+          </span>
+          <span class="pill accent">直播助农</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2025-xunlang-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-xunlang-1.jpg" alt="户外直播间搭建" loading="lazy"><span class="cap">户外直播间</span></span></a>
+            <a href="images/fieldwork/fw2025-xunlang-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-xunlang-2.jpg" alt="主播讲解农特产品" loading="lazy"><span class="cap">直播带货</span></span></a>
+            <a href="images/fieldwork/fw2025-xunlang-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-xunlang-3.jpg" alt="红蟳公社合影" loading="lazy"><span class="cap">红蟳公社合影</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2025.02</span>
+          <span class="at">
+            <span class="nm">「缘起莆仙」寻非遗根脉 · 青年来习实践队</span>
+            <span class="pl">莆仙非遗田野走访与内容记录</span>
+          </span>
+          <span class="pill">非遗调研</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2025-puxian-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-puxian-1.jpg" alt="莆仙非遗实践" loading="lazy"><span class="cap">实践现场</span></span></a>
+            <a href="images/fieldwork/fw2025-puxian-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-puxian-2.jpg" alt="莆仙非遗走访" loading="lazy"><span class="cap">田野走访</span></span></a>
+            <a href="images/fieldwork/fw2025-puxian-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2025-puxian-3.jpg" alt="妈祖回銮" loading="lazy"><span class="cap">妈祖回銮</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2023.10</span>
+          <span class="at">
+            <span class="nm">「e直播」助农促学 · 乡村振兴社会实践</span>
+            <span class="pl">农产品短视频 + 直播营销实践队，进村做产地直播</span>
+          </span>
+          <span class="pill accent">乡村振兴</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2023-elive-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-elive-1.jpg" alt="大源村合影" loading="lazy"><span class="cap">大源村合影</span></span></a>
+            <a href="images/fieldwork/fw2023-elive-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-elive-2.jpg" alt="乡村振兴实践队" loading="lazy"><span class="cap">实践队合影</span></span></a>
+            <a href="images/fieldwork/fw2023-elive-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-elive-3.jpg" alt="乡村现场" loading="lazy"><span class="cap">乡村现场</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2023.09</span>
+          <span class="at">
+            <span class="nm">同安直播助农社会实践</span>
+            <span class="pl">龙眼产地走访，产地内容拍摄与带货</span>
+          </span>
+          <span class="pill">直播助农</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2023-tongan-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-tongan-1.jpg" alt="同安产地走访" loading="lazy"><span class="cap">产地走访</span></span></a>
+            <a href="images/fieldwork/fw2023-tongan-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-tongan-2.jpg" alt="同安直播助农" loading="lazy"><span class="cap">产地内容</span></span></a>
+            <a href="images/fieldwork/fw2023-tongan-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-tongan-3.jpg" alt="同安助农" loading="lazy"><span class="cap">助农现场</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2023.05</span>
+          <span class="at">
+            <span class="nm">青春礼赞二十大 · 理论社团实践活动</span>
+            <span class="pl">马克思主义学院理论社团，活动组织与拍摄记录</span>
+          </span>
+          <span class="pill">理论宣讲</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2023-theory-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-theory-1.jpg" alt="理论社团实践活动 篔火晚会" loading="lazy"><span class="cap">篔火晚会</span></span></a>
+            <a href="images/fieldwork/fw2023-theory-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-theory-2.jpg" alt="青春礼赞二十大 理论社团全体合影" loading="lazy"><span class="cap">全体合影</span></span></a>
+            <a href="images/fieldwork/fw2023-theory-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-theory-3.jpg" alt="理论社团 团队协作" loading="lazy"><span class="cap">团队协作</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2023.04</span>
+          <span class="at">
+            <span class="nm">红色古田研学 · 知行合一践履</span>
+            <span class="pl">古田会议旧址研学，全程影像记录</span>
+          </span>
+          <span class="pill">红色研学</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2023-gutian-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-gutian-1.jpg" alt="古田研学" loading="lazy"><span class="cap">研学现场</span></span></a>
+            <a href="images/fieldwork/fw2023-gutian-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-gutian-2.jpg" alt="红色古田研学 毛主席像前合影" loading="lazy"><span class="cap">毛主席像前合影</span></span></a>
+            <a href="images/fieldwork/fw2023-gutian-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-gutian-3.jpg" alt="古田红色研学" loading="lazy"><span class="cap">红色研学</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2023.02</span>
+          <span class="at">
+            <span class="nm">「厚蕴莆仙」探寻非遗妈祖文化社会实践</span>
+            <span class="pl">湄洲岛妈祖祖庙 · 非遗田野记录 —— 获福建省寒假主题社会实践「优秀实践团队」</span>
+          </span>
+          <span class="pill">非遗调研</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2023-mazu-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-mazu-1.jpg" alt="湄洲岛妈祖祖庙非遗民俗" loading="lazy"><span class="cap">妈祖祖庙</span></span></a>
+            <a href="images/fieldwork/fw2023-mazu-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-mazu-2.jpg" alt="探访妈祖故里 感受妈祖文化" loading="lazy"><span class="cap">探访妈祖故里</span></span></a>
+            <a href="images/fieldwork/fw2023-mazu-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2023-mazu-3.jpg" alt="厦门城市职业学院寒假实践队合影" loading="lazy"><span class="cap">寒假实践队合影</span></span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="act">
+        <button class="act-head" type="button">
+          <span class="when">2022.07</span>
+          <span class="at">
+            <span class="nm">「勇往职前」暑期就业实践体验营</span>
+            <span class="pl">走访 9 家企业：361°、盼盼食品、大博医疗、保沣实业、中达电商园、晋江海峡人才市场等</span>
+          </span>
+          <span class="pill">企业参访</span>
+          <span class="act-more">3 张照片 <i>+</i></span>
+        </button>
+        <div class="act-body">
+          <div class="act-photos">
+            <a href="images/fieldwork/fw2022-job-1.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2022-job-1.jpg" alt="企业参访" loading="lazy"><span class="cap">企业参访</span></span></a>
+            <a href="images/fieldwork/fw2022-job-2.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2022-job-2.jpg" alt="保沣实业参访" loading="lazy"><span class="cap">进厂参访</span></span></a>
+            <a href="images/fieldwork/fw2022-job-3.jpg">
+              <span class="rshot"><img src="images/fieldwork/fw2022-job-3.jpg" alt="361度参访" loading="lazy"><span class="cap">361° 参访</span></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 荣誉 ================= -->
+<section class="sec" id="honors">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">荣誉</p>
+      <h2>个人荣誉</h2>
+      <p>按时间倒序共 7 项；电商技能大赛「市→省→国」三块奖牌，见下方竞赛图集。</p>
+    </div>
+
+    <div class="honors rv">
+      <div class="honor"><span class="yr">2025.04</span><span class="nm">正大杯第十五届福建省大学生市场调查与分析大赛</span><span class="pill accent">二等奖</span></div>
+      <div class="honor"><span class="yr">2023.11</span><span class="nm">华灿玺格速限时设计挑战赛</span><span class="pill accent">一等奖</span></div>
+      <div class="honor"><span class="yr">2023.11</span><span class="nm">全国高校跨境电子商务综合能力大赛</span><span class="pill">三等奖</span></div>
+      <div class="honor"><span class="yr">2023.09</span><span class="nm">第九届全省「互联网+」大学生创新创业大赛</span><span class="pill">参与</span></div>
+      <div class="honor"><span class="yr">2023.06</span><span class="nm">福建省 2022-2023 学年寒假主题社会实践</span><span class="pill">优秀实践团队</span></div>
+      <div class="honor"><span class="yr">2022.07</span><span class="nm">第三届全国青年摄影大赛</span><span class="pill">优秀作品奖</span></div>
+      <div class="honor"><span class="yr">2022.04</span><span class="nm">厦门城市职业学院创新工坊 &amp; 创训练营</span><span class="pill">小组第一名</span></div>
+    </div>
+
+    <div class="sec-head rv" style="margin:96px 0 40px;">
+      <p class="eyebrow">技能竞赛</p>
+      <h2>电子商务技能大赛 · 从市赛打到国赛</h2>
+      <p>同一套班子，2022 年市赛拿二等奖，2023 年省赛冲到一等奖，同年 7 月代表学校站上珠海国赛赛场。</p>
+    </div>
+
+    <div class="comp rv">
+      <div class="comp-head">
+        <span class="when">2023.07 · 珠海</span>
+        <h3>全国职业院校技能大赛 高职组电子商务赛项</h3>
+        <span class="pill">优秀奖</span>
+      </div>
+      <div class="comp-photos two">
+        <a class="rshot" href="images/competition/comp-nat-1.jpg" target="_blank">
+          <img src="images/competition/comp-nat-1.jpg" alt="2023 全国职业院校技能大赛高职组电子商务赛项 赛场合影" loading="lazy"><span class="cap">国赛赛场合影</span></a>
+        <a class="rshot fit" href="images/competition/comp-nat-2.jpg" target="_blank">
+          <img src="images/competition/comp-nat-2.jpg" alt="2023 全国职业院校技能大赛参赛证" loading="lazy"><span class="cap">参赛证</span></a>
+      </div>
+    </div>
+
+    <div class="comp rv">
+      <div class="comp-head">
+        <span class="when">2023 · 福州</span>
+        <h3>福建省职业院校技能大赛（高职组）电子商务技能</h3>
+        <span class="pill accent">一等奖</span>
+      </div>
+      <div class="comp-photos">
+        <a class="rshot" href="images/competition/comp-prov-1.jpg" target="_blank">
+          <img src="images/competition/comp-prov-1.jpg" alt="2023 福建省职业院校技能大赛 福建船政交通职业学院赛点合影" loading="lazy"><span class="cap">船政学院赛点合影</span></a>
+        <a class="rshot" href="images/competition/comp-prov-2.jpg" target="_blank">
+          <img src="images/competition/comp-prov-2.jpg" alt="2023 福建省职业院校技能大赛 赛前合影" loading="lazy"><span class="cap">赛前合影</span></a>
+        <a class="rshot fit" href="images/competition/comp-prov-cert.jpg" target="_blank">
+          <img src="images/competition/comp-prov-cert.jpg" alt="2023 福建省职业院校技能大赛高职组电子商务技能 团体一等奖获奖证书" loading="lazy"><span class="cap">获奖证书</span></a>
+      </div>
+    </div>
+
+    <div class="comp rv">
+      <div class="comp-head">
+        <span class="when">2022.11 · 厦门</span>
+        <h3>厦门市高等职业院校技能竞赛 电子商务技能赛项</h3>
+        <span class="pill accent">二等奖</span>
+      </div>
+      <div class="comp-photos">
+        <a class="rshot" href="images/competition/comp-city-1.jpg" target="_blank">
+          <img src="images/competition/comp-city-1.jpg" alt="2022 厦门市高等职业院校技能竞赛 软件职业技术学院赛点合影" loading="lazy"><span class="cap">赛点合影</span></a>
+        <a class="rshot" href="images/competition/comp-city-2.jpg" target="_blank">
+          <img src="images/competition/comp-city-2.jpg" alt="2022 厦门市高等职业院校技能竞赛电子商务技能赛项 颁奖现场" loading="lazy"><span class="cap">颁奖现场</span></a>
+        <a class="rshot fit" href="images/competition/comp-city-cert.jpg" target="_blank">
+          <img src="images/competition/comp-city-cert.jpg" alt="2022 厦门市高等职业院校技能竞赛电子商务技能（团体）二等奖荣誉证书" loading="lazy"><span class="cap">荣誉证书</span></a>
+      </div>
+    </div>
+
+    <div class="sec-head rv" style="margin:96px 0 40px;">
+      <p class="eyebrow">教育背景</p>
+      <h2>教育背景</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu rv">
+        <div class="when">2024.09 — 2026.06</div>
+        <h3>福州外语外贸学院</h3>
+        <p class="major">金融学 · 本科</p>
+        <ul>
+          <li>担任团支书，校官微团队核心成员</li>
+          <li>完成 20+ 场活动公众号推文创作与排版</li>
+          <li>作为核心拍摄人员，产出 500+ 张优质照片</li>
+        </ul>
+      </div>
+      <div class="edu rv">
+        <div class="when">2021.09 — 2024.06</div>
+        <h3>厦门城市职业学院</h3>
+        <p class="major">电子商务 · 专科</p>
+        <ul>
+          <li>担任班长兼团支书、校团委助理</li>
+          <li>多次参加校文体活动、创业培训与微视频、摄影比赛</li>
+          <li>寒暑假组织「三下乡」社会实践，志愿时长 160 小时</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 工作之外 ================= -->
+<section class="sec" id="life">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">生活与兴趣</p>
+      <h2>工作之外</h2>
+      <p>把鼠标放到文件夹上，看看镜头放下来之后的我。</p>
+    </div>
+
+    <div class="folders">
+      <!-- TODO: 每个 .layer 换成 <img src="images/life/frame-1.jpg"> -->
+      <div class="folder rv">
+        <div class="folder-stage">
+          <div class="layer l3">图 03</div>
+          <div class="layer l2">图 02</div>
+          <div class="layer l1">图 01</div>
+        </div>
+        <div class="folder-label">
+          <span class="n">01</span><b>拍照</b><span class="en">快门</span>
+          <span class="cn">工作之外也一直按快门</span>
+        </div>
+      </div>
+      <a class="folder rv" href="#racing">
+        <div class="folder-stage">
+          <div class="layer l3"><img src="images/race/2024-xianyou-02.jpg" alt=""></div>
+          <div class="layer l2"><img src="images/race/2024-xmu-01.jpg" alt=""></div>
+          <div class="layer l1"><img src="images/race/2024-putian-03.jpg" alt=""></div>
+        </div>
+        <div class="folder-label">
+          <span class="n">02</span><b>跑步</b><span class="en">配速</span>
+          <span class="cn">2 个全马 · 2 个半马，还在继续</span>
+        </div>
+      </a>
+      <div class="folder rv">
+        <div class="folder-stage">
+          <div class="layer l3">图 03</div>
+          <div class="layer l2">图 02</div>
+          <div class="layer l1">图 01</div>
+        </div>
+        <div class="folder-label">
+          <span class="n">03</span><b>阅读</b><span class="en">书页</span>
+          <span class="cn">最近在读的三本书</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 跑步 / 赛事 ================= -->
+<section class="sec" id="racing">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">跑步</p>
+      <h2>工作之外，我在跑步</h2>
+      <p>两场全马、两场半马。跑步是底层的习惯，很多拍摄素材也是顺路在赛道上攒下来的。</p>
+    </div>
+
+    <div class="race-stats rv">
+      <div class="rs"><b>4</b><span>场完赛</span></div>
+      <div class="rs"><b>126.6</b><span>累计完赛公里</span></div>
+      <div class="rs"><b>1:51:42</b><span>最快半马</span></div>
+      <div class="rs"><b>4:36:07</b><span>最快全马</span></div>
+    </div>
+
+    <div class="races rv">
+      <div class="race">
+        <span class="when">2024.12.29</span>
+        <span class="ev">豆讯·木兰溪杯 莆田马拉松<span class="dist">全程 42.195km</span></span>
+        <span class="res">4:36:56<i>枪声</i></span>
+        <span class="pace">6'33" /km</span>
+      </div>
+      <div class="race">
+        <span class="when">2024.11.17</span>
+        <span class="ev">海安集团·仙游马拉松<span class="dist">全程 42.195km</span></span>
+        <span class="res">4:56:05<i>净计时</i></span>
+        <span class="pace">7'01" /km</span>
+      </div>
+      <div class="race">
+        <span class="when">2024.04.14</span>
+        <span class="ev">厦门大学首届半程马拉松<span class="dist">半程 21.0975km</span></span>
+        <span class="res">2:03:53<i>净计时</i></span>
+        <span class="pace">5'52" /km</span>
+      </div>
+      <div class="race">
+        <span class="when">2023.12.17</span>
+        <span class="ev">特步厦门环东半程马拉松<span class="dist">半程 21.0975km</span></span>
+        <span class="res">1:51:42<i>净计时</i></span>
+        <span class="pace">5'18" /km</span>
+      </div>
+    </div>
+
+    <p class="block-label rv">赛道留影</p>
+    <div class="race-grid rv">
+      <a class="rshot" href="images/race/2023-huandong-01.jpg" target="_blank">
+        <img src="images/race/2023-huandong-01.jpg" alt="2023 厦门环东半马 完赛" loading="lazy">
+        <span class="cap">2023 厦门环东 · 完赛</span></a>
+      <a class="rshot" href="images/race/2023-huandong-02.jpg" target="_blank">
+        <img src="images/race/2023-huandong-02.jpg" alt="2023 厦门环东半马 赛道" loading="lazy">
+        <span class="cap">2023 厦门环东 · 21km</span></a>
+      <a class="rshot" href="images/race/2023-huandong-03.jpg" target="_blank">
+        <img src="images/race/2023-huandong-03.jpg" alt="2023 厦门环东半马 赛道人群" loading="lazy">
+        <span class="cap">2023 厦门环东 · 赛道</span></a>
+
+      <a class="rshot" href="images/race/2024-xmu-01.jpg" target="_blank">
+        <img src="images/race/2024-xmu-01.jpg" alt="2024 厦大半马 奖牌" loading="lazy">
+        <span class="cap">2024 厦大半马 · 奖牌</span></a>
+      <a class="rshot" href="images/race/2024-xmu-02.jpg" target="_blank">
+        <img src="images/race/2024-xmu-02.jpg" alt="2024 厦大半马 起点" loading="lazy">
+        <span class="cap">2024 厦大半马 · 起点</span></a>
+      <a class="rshot" href="images/race/2024-xianyou-01.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-01.jpg" alt="2024 仙游马拉松 起点" loading="lazy">
+        <span class="cap">2024 仙游全马 · 起点</span></a>
+
+      <a class="rshot" href="images/race/2024-xianyou-02.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-02.jpg" alt="2024 仙游马拉松 赛道" loading="lazy">
+        <span class="cap">2024 仙游全马 · 赛道</span></a>
+      <a class="rshot" href="images/race/2024-xianyou-03.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-03.jpg" alt="2024 仙游马拉松 赛道" loading="lazy">
+        <span class="cap">2024 仙游全马 · 赛道</span></a>
+      <a class="rshot" href="images/race/2024-xianyou-04.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-04.jpg" alt="2024 仙游马拉松 赛道" loading="lazy">
+        <span class="cap">2024 仙游全马 · 赛道</span></a>
+      <a class="rshot" href="images/race/2024-xianyou-05.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-05.jpg" alt="2024 仙游马拉松 赛道" loading="lazy">
+        <span class="cap">2024 仙游全马 · 35km</span></a>
+      <a class="rshot" href="images/race/2024-xianyou-06.jpg" target="_blank">
+        <img src="images/race/2024-xianyou-06.jpg" alt="2024 仙游马拉松 奖牌" loading="lazy">
+        <span class="cap">2024 仙游全马 · 奖牌</span></a>
+
+      <a class="rshot" href="images/race/2024-putian-01.jpg" target="_blank">
+        <img src="images/race/2024-putian-01.jpg" alt="2024 莆田马拉松 奖牌" loading="lazy">
+        <span class="cap">2024 莆田全马 · 奖牌</span></a>
+      <a class="rshot" href="images/race/2024-putian-02.jpg" target="_blank">
+        <img src="images/race/2024-putian-02.jpg" alt="2024 莆田马拉松 博览会" loading="lazy">
+        <span class="cap">2024 莆田全马 · 博览会</span></a>
+      <a class="rshot" href="images/race/2024-putian-03.jpg" target="_blank">
+        <img src="images/race/2024-putian-03.jpg" alt="2024 莆田马拉松 赛道" loading="lazy">
+        <span class="cap">2024 莆田全马 · 赛道</span></a>
+      <a class="rshot" href="images/race/2024-putian-04.jpg" target="_blank">
+        <img src="images/race/2024-putian-04.jpg" alt="2024 莆田马拉松 起点" loading="lazy">
+        <span class="cap">2024 莆田全马 · 起点</span></a>
+    </div>
+
+    <p class="block-label rv">完赛证书</p>
+    <div class="certs rv">
+      <a class="cert" href="images/race/cert-2023-huandong.jpg" target="_blank">
+        <img src="images/race/cert-2023-huandong.jpg" alt="2023 厦门环东半程马拉松成绩证书" loading="lazy">
+        <span>厦门环东半马 · 1:51:42</span></a>
+      <a class="cert" href="images/race/cert-2024-xmu.jpg" target="_blank">
+        <img src="images/race/cert-2024-xmu.jpg" alt="2024 厦门大学首届半程马拉松成绩证书" loading="lazy">
+        <span>厦大首届半马 · 2:03:53</span></a>
+      <a class="cert" href="images/race/cert-2024-xianyou.jpg" target="_blank">
+        <img src="images/race/cert-2024-xianyou.jpg" alt="2024 仙游马拉松成绩证书" loading="lazy">
+        <span>仙游全马 · 4:56:05</span></a>
+      <a class="cert" href="images/race/cert-2024-putian.jpg" target="_blank">
+        <img src="images/race/cert-2024-putian.jpg" alt="2024 莆田马拉松成绩证书" loading="lazy">
+        <span>莆田全马 · 4:36:56</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 联系 ================= -->
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="rv">
+        <p class="eyebrow">联系方式</p>
+        <h2>有拍摄或内容合作<br />随时聊</h2>
+        <p class="note">求职、约拍、短视频与直播项目都欢迎。看到消息我会尽快回复。</p>
+        <div class="btns">
+          <a href="tel:17850846042" class="btn btn-solid">打电话给我</a>
+          <a href="mailto:1321400855@qq.com" class="btn btn-line">发邮件</a>
+          <!-- TODO: 加上小红书 / 抖音主页链接 -->
+        </div>
+      </div>
+      <div class="contact-info rv">
+        <div><dt>电话</dt><dd>178-5084-6042</dd></div>
+        <div><dt>邮箱</dt><dd>1321400855@qq.com</dd></div>
+        <div><dt>微信</dt><dd>1321400855</dd></div>
+        <div><dt>坐标</dt><dd>厦门 / 福州</dd></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= 图片灯箱 ================= -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="图片查看">
+  <img src="" alt="">
+</div>
+
+<!-- ================= 视频弹窗 ================= -->
+<div class="vmodal" id="vmodal" role="dialog" aria-modal="true" aria-label="视频播放">
+  <div class="vmodal-inner"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 林星雄</span>
+    <span>本页所有影像由本人拍摄</span>
+  </div>
+</footer>
+
+<script>
+  var header = document.getElementById('header');
+  window.addEventListener('scroll', function(){
+    header.classList.toggle('scrolled', window.scrollY > 12);
+  }, {passive:true});
+
+  var menuBtn = document.getElementById('menuBtn');
+  var navLinks = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', function(){ navLinks.classList.toggle('open'); });
+  navLinks.addEventListener('click', function(e){
+    if (e.target.tagName === 'A') navLinks.classList.remove('open');
+  });
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, {threshold:.1, rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  var linkMap = {};
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    linkMap[a.getAttribute('href').slice(1)] = a;
+  });
+  var spy = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      var a = linkMap[en.target.id];
+      if (!a) return;
+      if (en.isIntersecting){
+        document.querySelectorAll('.nav-links a').forEach(function(x){ x.classList.remove('active'); });
+        a.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('section[id]').forEach(function(s){ spy.observe(s); });
+
+  document.querySelectorAll('.chip[data-copy]').forEach(function(btn){
+    var note = btn.querySelector('.note');
+    var original = note.textContent;
+    btn.addEventListener('click', function(){
+      var text = btn.dataset.copy;
+      var done = function(){
+        note.textContent = '已复制';
+        setTimeout(function(){ note.textContent = original; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done, done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+  /* ===== 视频弹窗播放器 =====
+     用法：给作品卡加 data-video 属性，播放角标会自动出现
+       本地文件： data-video="videos/xxx.mp4"
+       B站嵌入： data-video="iframe:https://player.bilibili.com/player.html?bvid=BVxxxx"
+     不填 data-video 的卡片，点击仍然走 <a href> 外链，互不影响。 */
+  (function(){
+    var modal = document.getElementById('vmodal');
+    if (!modal) return;
+    var inner = modal.querySelector('.vmodal-inner');
+    var lastFocus = null;
+
+    function closeModal(){
+      modal.classList.remove('open');
+      inner.innerHTML = '';
+      document.body.style.overflow = '';
+      if (lastFocus) { try { lastFocus.focus(); } catch(e){} }
+    }
+
+    function openModal(card){
+      var src = card.getAttribute('data-video');
+      if (!src) return;
+      inner.innerHTML = '';
+
+      var tip = document.createElement('span');
+      tip.className = 'vmodal-tip';
+      tip.textContent = card.querySelector('h4') ? card.querySelector('h4').textContent : (card.querySelector('.bar b') ? card.querySelector('.bar b').textContent : '');
+      inner.appendChild(tip);
+
+      if (src.indexOf('iframe:') === 0){
+        var f = document.createElement('iframe');
+        f.src = src.slice(7);
+        f.setAttribute('allow','autoplay; fullscreen; picture-in-picture');
+        f.setAttribute('allowfullscreen','');
+        inner.appendChild(f);
+      } else {
+        var v = document.createElement('video');
+        v.src = src;
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        v.setAttribute('preload','metadata');
+        inner.appendChild(v);
+      }
+
+      var btn = document.createElement('button');
+      btn.className = 'vmodal-close';
+      btn.setAttribute('aria-label','关闭');
+      btn.innerHTML = '&#10005;';
+      btn.addEventListener('click', closeModal);
+      inner.appendChild(btn);
+
+      lastFocus = card;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.querySelectorAll('.case[data-video],.fwvideo[data-video]').forEach(function(card){
+      if (!card.querySelector('.play')){
+        var badge = document.createElement('span');
+        badge.className = 'play';
+        badge.innerHTML = '<i></i>';
+        var frame = card.querySelector('.frame');
+        if (frame) frame.appendChild(badge);
+      }
+      card.addEventListener('click', function(e){
+        e.preventDefault();
+        openModal(card);
+      });
+    });
+
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+  })();
+  /* ===== 社会实践手风琴 ===== */
+  (function(){
+    var items = document.querySelectorAll('.act');
+    function setBody(item, open){
+      var b = item.querySelector('.act-body');
+      if (!b) return;
+      b.style.maxHeight = open ? (b.scrollHeight + 'px') : '0px';
+    }
+    items.forEach(function(item){
+      var head = item.querySelector('.act-head');
+      var body = item.querySelector('.act-body');
+      if (!head || !body) return;
+      head.addEventListener('click', function(){
+        var wasOpen = item.classList.contains('open');
+        var scope = item.parentNode;
+        scope.querySelectorAll('.act.open').forEach(function(o){
+          if (o === item) return;
+          o.classList.remove('open');
+          o.querySelector('.act-head').setAttribute('aria-expanded', 'false');
+          setBody(o, false);
+        });
+        item.classList.toggle('open', !wasOpen);
+        head.setAttribute('aria-expanded', String(!wasOpen));
+        setBody(item, !wasOpen);
+      });
+    });
+    document.querySelectorAll('.act.open').forEach(function(o){ setBody(o, true); });
+    window.addEventListener('resize', function(){
+      document.querySelectorAll('.act.open').forEach(function(o){
+        var b = o.querySelector('.act-body');
+        if (b) b.style.maxHeight = b.scrollHeight + 'px';
+      });
+    });
+  })();
+
+  /* ===== 图片灯箱 ===== */
+  (function(){
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    var img = lb.querySelector('img');
+    function close(){
+      lb.classList.remove('open');
+      img.src = '';
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.act-photos a').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        img.src = a.getAttribute('href');
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    lb.addEventListener('click', close);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && lb.classList.contains('open')) close();
+    });
+  })();
+</script>
+</body>
+</html>
